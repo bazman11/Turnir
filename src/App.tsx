@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:5050/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (response.ok) {
+        alert("File uploaded and source file updated successfully!");
+      } else {
+        alert("Failed to update source file.");
+      }
+    } catch (err) {
+      console.error("Error uploading file:", err);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <div>Games</div>
+      <div>Lakers 156 : 158 Boston</div>
+      <div>Charlotte 140 : 120 Memphis</div>
+      <div>Barcelona 3 : 2 Real Madrid</div>
+      
+<div>Lakers 156 : 158 Boston</div>
+<div>Charlotte 140 : 120 Memphis</div>
+<div>Barcelona 3 : 2 Real Madrid</div>
+<div>proba</div>
+      <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} />
+    </div>
+  );
+};
 
-export default App
+export default App;
