@@ -2,7 +2,6 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
-import "../components/Header.css"
 
 const Header: React.FC = () => {
   return (
@@ -19,9 +18,6 @@ const Header: React.FC = () => {
             </Nav.Link>
             <Nav.Link as={NavLink} to="/u17" className="text-dark">
               U17
-            </Nav.Link>
-            <Nav.Link as={NavLink} to="/u19" className="text-dark">
-              U19
             </Nav.Link>
             <Nav.Link as={NavLink} to="/u21" className="text-dark">
               U21
