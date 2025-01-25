@@ -1,4 +1,5 @@
 import React from "react";
+import { Button, Container, Form } from "react-bootstrap";
 
 const Upload: React.FC = () => {
   const handleFileUpload = async (
@@ -27,7 +28,24 @@ const Upload: React.FC = () => {
       console.error("Error uploading file:", err);
     }
   };
-  return <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} />;
+  return (
+    <Container className="my-5">
+      <h2 className="mb-4 text-center">Upload Tabele</h2>
+      <Form>
+        <Form.Group controlId="formFile" className="mb-3">
+          <Form.Label>Izaberite excel file za upload:</Form.Label>
+          <Form.Control
+            type="file"
+            accept=".xls,.xlsx"
+            onChange={handleFileUpload}
+          />
+        </Form.Group>
+        <Button variant="primary" type="button">
+          Submit
+        </Button>
+      </Form>
+    </Container>
+  );
 };
 
 export default Upload;
