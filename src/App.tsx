@@ -1,43 +1,26 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import Home from "./pages/Home";
+import U15 from "./pages/U15";
+import U17 from "./pages/U17";
+import U19 from "./pages/U19";
+import U21 from "./pages/U21";
 
 const App: React.FC = () => {
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch("http://localhost:5050/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        alert("File uploaded and source file updated successfully!");
-      } else {
-        alert("Failed to update source file.");
-      }
-    } catch (err) {
-      console.error("Error uploading file:", err);
-    }
-  };
-
   return (
-    <div>
-      <div>Games</div>
-      <div>Lakers 156 : 158 Boston</div>
-      <div>Charlotte 140 : 120 Memphis</div>
-      <div>Barcelona 3 : 2 Real Madrid</div>
-      
-<div>Lakers 156 : 158 Boston</div>
-<div>Charlotte 140 : 120 Memphis</div>
-<div>Barcelona 3 : 2 Real Madrid</div>
-<div>proba</div>
-      <input type="file" accept=".xls,.xlsx" onChange={handleFileUpload} />
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/u15" element={<U15 />} />
+        <Route path="/u17" element={<U17 />} />
+        <Route path="/u19" element={<U19 />} />
+        <Route path="/u21" element={<U21 />} />
+      </Routes>
+    </Router>
   );
 };
 
