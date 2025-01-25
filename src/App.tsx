@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import Upload from "./pages/Upload";
 import Home from "./pages/Home";
 import U15 from "./pages/U15";
 import U17 from "./pages/U17";
@@ -14,11 +15,12 @@ const App: React.FC = () => {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/u15" element={<U15 />} />
         <Route path="/u17" element={<U17 />} />
         <Route path="/u19" element={<U19 />} />
         <Route path="/u21" element={<U21 />} />
+        <Route path="/upload" element={<Upload />} />
       </Routes>
     </Router>
   );

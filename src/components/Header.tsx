@@ -2,33 +2,31 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
+import "../components/Header.css"
 
 const Header: React.FC = () => {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary fixed-top">
+    <Navbar expand="lg" className="bg-white shadow-sm fixed-top">
       <Container>
-        <Navbar.Brand as={NavLink} to="/">
-          React-Bootstrap
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link as={NavLink} to="/" end>
-              Home
+        <Navbar.Toggle aria-controls="navbarNav" />
+        <Navbar.Collapse id="navbarNav" className="justify-content-center">
+          <Nav className="align-items-center">
+            <Nav.Link as={NavLink} to="/home" end className="text-dark">
+              Početna
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/u15">
+            <Nav.Link as={NavLink} to="/u15" className="text-dark">
               U15
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/u17">
+            <Nav.Link as={NavLink} to="/u17" className="text-dark">
               U17
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/u19">
+            <Nav.Link as={NavLink} to="/u19" className="text-dark">
               U19
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/u21">
+            <Nav.Link as={NavLink} to="/u21" className="text-dark">
               U21
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/upload">
+            <Nav.Link as={NavLink} to="/upload" className="text-dark">
               Upload
             </Nav.Link>
           </Nav>
