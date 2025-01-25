@@ -1,4 +1,5 @@
 import React from "react";
+import "./css/U15.css";
 
 const U15: React.FC = () => {
   return (
@@ -9,23 +10,7 @@ const U15: React.FC = () => {
             <div className="card-header bg-primary text-white">
               <h5 className="mb-0">Fixtures</h5>
             </div>
-            <div className="card-body">
-              <div className="fixture mb-3">
-                <p className="mb-1">
-                  <strong>Team A vs Team B</strong>
-                </p>
-                <p className="mb-1">Date: January 25, 2025</p>
-                <p>Time: 6:00 PM</p>
-              </div>
-              <hr />
-              <div className="fixture mb-3">
-                <p className="mb-1">
-                  <strong>Team C vs Team D</strong>
-                </p>
-                <p className="mb-1">Date: January 26, 2025</p>
-                <p>Time: 4:00 PM</p>
-              </div>
-            </div>
+            <div className="card-body"></div>
           </div>
         </div>
 
