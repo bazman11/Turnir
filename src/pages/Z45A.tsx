@@ -1,11 +1,11 @@
 import React from "react";
 import "./css/U15.css";
 
-const A40: React.FC = () => {
+const Z45A: React.FC = () => {
   return (
     <div className="container mt-4">
-      <div className="header-container mb-4">
-        <h1 className="kategorija">Kategorija: Muškarci 40+</h1>
+        <div className="header-container mb-4">
+        <h1 className="kategorija">Kategorija: Žene 45+</h1>
         <h2 className="grupa">Grupa: A</h2>
       </div>
       <div className="row g-4">
@@ -62,4 +62,4 @@ const A40: React.FC = () => {
   );
 };
 
-export default A40;
+export default Z45A;
