@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { NavLink } from "react-router-dom";
-import "../components/Header.css";
+import "../Header/Header.css"
 
 const Header: React.FC = () => {
   return (

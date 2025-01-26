@@ -1,0 +1,79 @@
+/* Navbar Styling */
+.navbar {
+    font-size: 1.1rem; /* Slightly larger font for readability */
+    padding: 1.5rem 1rem; /* Thicker navbar */
+    font-family: 'Helvetica', 'Arial', sans-serif; /* Modern sans-serif font */
+    background-color: #ffffff; /* White background for the navbar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  /* Navbar Links Styling */
+  .navbar .nav-link,
+  .navbar .dropdown {
+    margin-right: 1.5rem; /* Spacing between nav links */
+    color: #333; /* Dark gray color for text */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
+  }
+  
+  .navbar .nav-link:hover,
+  .navbar .dropdown:hover {
+    color: #007bff; /* Blue color on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+  
+  /* Dropdown Menu Default State */
+  .navbar .dropdown-menu {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+  }
+  
+  /* Show Dropdown Menu on Hover */
+  .navbar .nav-item:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0); /* Smooth slide-down effect */
+  }
+  
+  /* Dropdown Menu Styling */
+  .dropdown-menu {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #ddd; /* Light gray border */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-radius: 0.5rem; /* Rounded corners */
+    padding: 0.5rem 0; /* Padding for dropdown items */
+  }
+  
+  /* Dropdown Items Styling */
+  .dropdown-item {
+    padding: 0.5rem 1.5rem; /* Adjust padding for clickable area */
+    color: #333; /* Dark gray text */
+    transition: background-color 0.3s, color 0.3s; /* Smooth hover effects */
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f8f9fa; /* Light gray background on hover */
+    color: #007bff; /* Blue text on hover */
+  }
+  
+  /* Active Link Styling */
+  .navbar .nav-link.active,
+  .dropdown-item.active {
+    font-weight: bold; /* Highlight active link */
+    color: #007bff; /* Blue color for active state */
+  }
+  
+  /* Responsive Toggle Button */
+  .navbar-toggler {
+    border: none;
+    font-size: 1.25rem;
+  }
+  
+  /* Add some spacing below navbar for better visual appearance */
+  body {
+    padding-top: 100px; /* Adjust for fixed navbar height */
+  }
+  

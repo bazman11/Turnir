@@ -1,7 +1,7 @@
 import React from "react";
 
-const U19: React.FC = () => {
+const B40: React.FC = () => {
   return <div></div>;
 };
 
-export default U19;
+export default B40;

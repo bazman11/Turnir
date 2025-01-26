@@ -1,7 +1,7 @@
 import React from "react";
 
-const U21: React.FC = () => {
+const B35: React.FC = () => {
   return <div></div>;
 };
 
-export default U21;
+export default B35;

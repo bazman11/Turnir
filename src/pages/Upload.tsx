@@ -41,7 +41,7 @@ const Upload: React.FC = () => {
           />
         </Form.Group>
         <Button variant="primary" type="button">
-          Submit
+          Pošalji
         </Button>
       </Form>
     </Container>

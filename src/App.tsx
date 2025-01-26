@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Upload from "./pages/Upload";
-import Home from "./pages/Home";
-import U15 from "./pages/U15";
-import U17 from "./pages/U17";
-import U19 from "./pages/U19";
-import U21 from "./pages/U21";
+import Home from "./components/Home/Home";
+import U15 from "./pages/A35";
+import U17 from "./pages/B35";
+import U19 from "./pages/A40";
+import U21 from "./pages/B40";
 
 const App: React.FC = () => {
   return (
