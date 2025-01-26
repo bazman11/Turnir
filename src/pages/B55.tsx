@@ -4,7 +4,7 @@ import "./css/U15.css";
 const B55: React.FC = () => {
   return (
     <div className="container mt-4">
-        <div className="header-container mb-4">
+      <div className="header-container mb-4">
         <h1 className="kategorija">Kategorija: Muškarci 55+</h1>
         <h2 className="grupa">Grupa: B</h2>
       </div>
@@ -28,32 +28,7 @@ const B55: React.FC = () => {
               <h5 className="mb-0">Leaderboard</h5>
             </div>
             <div className="card-body">
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="team-name">Team A</span>
-                    <span className="badge bg-primary rounded-pill">15 Points</span>
-                  </div>
-                </li>
-                <li className="list-group-item">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="team-name">Team B</span>
-                    <span className="badge bg-secondary rounded-pill">12 Points</span>
-                  </div>
-                </li>
-                <li className="list-group-item">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="team-name">Team C</span>
-                    <span className="badge bg-info rounded-pill">9 Points</span>
-                  </div>
-                </li>
-                <li className="list-group-item">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="team-name">Team D</span>
-                    <span className="badge bg-warning rounded-pill">6 Points</span>
-                  </div>
-                </li>
-              </ul>
+              <ul className="list-group"></ul>
             </div>
           </div>
         </div>

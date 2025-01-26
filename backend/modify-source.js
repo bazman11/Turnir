@@ -11,7 +11,7 @@ const PORT = 5050;
 
 const upload = multer({ dest: "uploads/" });
 
-const sourceFilePath = path.join(__dirname, "../src/pages/U15.tsx");
+// const sourceFilePath = path.join(__dirname, "../src/pages/A35.tsx");
 
 const processExcelFile = (filePath) => {
   const workbook = xlsx.readFile(filePath);
@@ -62,69 +62,111 @@ const processExcelFile = (filePath) => {
       }
     }
 
-    // Parse Tabela (table) data
-    if (tableStart !== -1) {
-      for (let i = tableStart; i < sheetData.length; i++) {
+    const tableDataStartRow = 5; // Row index 6 (zero-based)
+    const tableDataStartColumn = 7; // Column H (zero-based)
+    const numberOfRowsToExtract = 9; // Rows to extract
+
+    if (sheetData.length > tableDataStartRow) {
+      for (
+        let i = tableDataStartRow;
+        i < tableDataStartRow + numberOfRowsToExtract && i < sheetData.length;
+        i++
+      ) {
         const row = sheetData[i];
-        if (!row[0] || row.length < 9) break; // Stop if row is invalid
-        sheetResults.table[row[0]] = {
-          GP: parseInt(row[1], 10) || 0,
-          W: parseInt(row[2], 10) || 0,
-          D: parseInt(row[3], 10) || 0,
-          L: parseInt(row[4], 10) || 0,
-          PF: parseInt(row[5], 10) || 0,
-          PA: parseInt(row[6], 10) || 0,
-          DIFF: parseInt(row[7], 10) || 0,
-          PTS: parseInt(row[8], 10) || 0,
-        };
+        const teamName = row[tableDataStartColumn];
+        if (teamName) {
+          sheetResults.table[teamName] = {
+            GP: parseInt(row[tableDataStartColumn + 1], 10) || 0,
+            W: parseInt(row[tableDataStartColumn + 2], 10) || 0,
+            D: parseInt(row[tableDataStartColumn + 3], 10) || 0,
+            L: parseInt(row[tableDataStartColumn + 4], 10) || 0,
+            PF: parseInt(row[tableDataStartColumn + 5], 10) || 0,
+            PA: parseInt(row[tableDataStartColumn + 6], 10) || 0,
+            DIFF: parseInt(row[tableDataStartColumn + 7], 10) || 0,
+            PTS: parseInt(row[tableDataStartColumn + 8], 10) || 0,
+          };
+        }
       }
     }
 
     extractedData[sheetName] = sheetResults;
   });
 
-  console.log("Extraction Result:", JSON.stringify(extractedData, null, 2));
   return extractedData;
 };
 
 const updateReactSourceFile = (extractedData) => {
-  let pageContent = `
+  Object.keys(extractedData).forEach((sheetName) => {
+    let fileName;
+
+    // Map sheet names to file names
+    if (sheetName === "35+ A") fileName = "A35.tsx";
+    else if (sheetName === "35+ B") fileName = "B35.tsx";
+    else if (sheetName === "40+ A") fileName = "A40.tsx";
+    else if (sheetName === "40+ B") fileName = "B40.tsx";
+    else if (sheetName === "45+ A") fileName = "A45.tsx";
+    else if (sheetName === "45+ B") fileName = "B45.tsx";
+    else if (sheetName === "50+ A") fileName = "A50.tsx";
+    else if (sheetName === "50+ B") fileName = "B50.tsx";
+    else if (sheetName === "35+ Ž") fileName = "Z35A.tsx";
+    else if (sheetName === "45+ Ž") fileName = "Z45A.tsx";
+    else return; // Skip sheets that don't have a corresponding file
+
+    // Construct the file path
+    const filePath = path.join(__dirname, `../src/pages/${fileName}`);
+
+    const round1Data = extractedData[sheetName]?.round1 || {};
+    const tableData = extractedData[sheetName]?.table || {};
+
+    let pageContent = `
       <div className="card-body">
     `;
 
-  Object.keys(extractedData).forEach((sheetName) => {
-    if (sheetName === "35+ A" || sheetName === "35+ B") {
-      const round1Data = extractedData[sheetName]?.round1 || {};
-      const tableData = extractedData[sheetName]?.table || {};
+    Object.values(round1Data).forEach((match, index) => {
+      pageContent += `
+      <div className="fixture mb-3">
+        <p className="mb-1"><strong>${match.Player1} vs ${
+        match.Player2
+      }</strong></p>
+        <p className="mb-1">Score: ${match.Score1} - ${match.Score2}</p>
+        <p>Match Number: ${index + 1}</p>
+      </div>
+      <hr />
+    `;
+    });
 
-      Object.values(round1Data).forEach((match, index) => {
-        pageContent += `
-        <div className="fixture mb-3">
-          <p className="mb-1"><strong>${match.Player1} vs ${
-          match.Player2
-        }</strong></p>
-          <p className="mb-1">Score: ${match.Score1} - ${match.Score2}</p>
-          <p>Match Number: ${index + 1}</p>
+    let tableContent = `
+    <ul className="list-group">
+  `;
+
+    Object.entries(tableData).forEach(([teamName, teamStats]) => {
+      tableContent += `
+      <li className="list-group-item">
+        <div className="d-flex justify-content-between align-items-center">
+          <span className="team-name">${teamName}</span>
+          <span className="badge bg-primary rounded-pill">
+            ${teamStats.PTS}
+          </span>
         </div>
-        <hr />
-      `;
-      });
-    }
+      </li>
+    `;
+    });
+
+    const originalContent = fs.readFileSync(filePath, "utf-8");
+    const updatedContent = originalContent.replace(
+      /<div className="card-body">/,
+      `${pageContent}`
+    );
+    const updateContentTable = updatedContent.replace(
+      /<ul className="list-group">/,
+      `${tableContent}`
+    );
+
+    fs.writeFileSync(filePath, updateContentTable, "utf-8");
+    console.log(`File ${fileName} updated successfully!`);
   });
-
-  pageContent += `</div>`;
-
-  const originalContent = fs.readFileSync(sourceFilePath, "utf-8");
-  const updatedContent = originalContent.replace(
-    /<div className="card-body"><\/div>/,
-    `${pageContent}`
-  );
-
-  fs.writeFileSync(sourceFilePath, updatedContent, "utf-8");
-  console.log("React source file updated successfully with dynamic pages!");
 };
 
-// API to handle file upload and processing
 app.post("/upload", upload.single("file"), (req, res) => {
   const filePath = req.file.path;
   try {
