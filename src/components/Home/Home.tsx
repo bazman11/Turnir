@@ -47,7 +47,7 @@ const Home: React.FC = () => {
           kako vaš omiljeni tim stoji na turniru.
         </p>
         <button className="btn btn-primary mt-3">
-          <Link to="/u15" className="text-white text-decoration-none">
+          <Link to="/35+/grupa-a" className="text-white text-decoration-none">
             Pogledaj tabelu
           </Link>
         </button>

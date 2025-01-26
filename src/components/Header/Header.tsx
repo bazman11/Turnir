@@ -19,80 +19,80 @@ const Header: React.FC = () => {
 
             {/* 35+ Dropdown */}
             <NavDropdown title="35+" id="nav-dropdown-35" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u15/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/35+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u15/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/35+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* 40+ Dropdown */}
             <NavDropdown title="40+" id="nav-dropdown-40" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u17/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/40+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u17/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/40+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* 45+ Dropdown */}
             <NavDropdown title="45+" id="nav-dropdown-45" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/45+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/45+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* 50+ Dropdown */}
             <NavDropdown title="50+" id="nav-dropdown-50" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/50+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/50+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* 55+ Dropdown */}
             <NavDropdown title="55+" id="nav-dropdown-55" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/55+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/55+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* 60+ Dropdown */}
             <NavDropdown title="60+" id="nav-dropdown-60" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/60+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/60+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* Ž35+ Dropdown */}
             <NavDropdown title="Ž35+" id="nav-dropdown-z35" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u15/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/Z35+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u15/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/Z35+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>
 
             {/* Ž45+ Dropdown */}
             <NavDropdown title="Ž45+" id="nav-dropdown-z45" className="text-dark">
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-a">
+              <NavDropdown.Item as={NavLink} to="/Z45+/grupa-a">
                 Grupa A
               </NavDropdown.Item>
-              <NavDropdown.Item as={NavLink} to="/u21/grupa-b">
+              <NavDropdown.Item as={NavLink} to="/Z45+/grupa-b">
                 Grupa B
               </NavDropdown.Item>
             </NavDropdown>

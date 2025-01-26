@@ -1,12 +1,12 @@
 import React from "react";
 import "./css/U15.css";
 
-const A40: React.FC = () => {
+const B45: React.FC = () => {
   return (
     <div className="container mt-4">
       <div className="header-container mb-4">
-        <h1 className="kategorija">Kategorija: Muškarci 40+</h1>
-        <h2 className="grupa">Grupa: A</h2>
+        <h1 className="kategorija">Kategorija: Muškarci 45+</h1>
+        <h2 className="grupa">Grupa: B</h2>
       </div>
       <div className="row g-4">
         {/* Fixtures Section */}
@@ -32,13 +32,17 @@ const A40: React.FC = () => {
                 <li className="list-group-item">
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="team-name">Team A</span>
-                    <span className="badge bg-primary rounded-pill">15 Points</span>
+                    <span className="badge bg-primary rounded-pill">
+                      15 Points
+                    </span>
                   </div>
                 </li>
                 <li className="list-group-item">
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="team-name">Team B</span>
-                    <span className="badge bg-secondary rounded-pill">12 Points</span>
+                    <span className="badge bg-secondary rounded-pill">
+                      12 Points
+                    </span>
                   </div>
                 </li>
                 <li className="list-group-item">
@@ -50,7 +54,9 @@ const A40: React.FC = () => {
                 <li className="list-group-item">
                   <div className="d-flex justify-content-between align-items-center">
                     <span className="team-name">Team D</span>
-                    <span className="badge bg-warning rounded-pill">6 Points</span>
+                    <span className="badge bg-warning rounded-pill">
+                      6 Points
+                    </span>
                   </div>
                 </li>
               </ul>
@@ -62,4 +68,4 @@ const A40: React.FC = () => {
   );
 };
 
-export default A40;
+export default B45;
