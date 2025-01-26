@@ -41,7 +41,7 @@ const Home: React.FC = () => {
 
         {/* Google Maps Embed */}
         <div className="mt-4">
-          <h4 className="text-uppercase text-center">Lokacija: Hotel Hills</h4>
+          <h4 className="text-center">Lokacija: Hotel Hills</h4>
           <div className="d-flex justify-content-center">
             <iframe
               title="Hotel Hills Location"
