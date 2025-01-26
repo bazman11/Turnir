@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -22,12 +22,14 @@ import Z45B from "./pages/Z45B";
 import A45 from "./pages/A45";
 import B45 from "./pages/B45";
 
-
 const App: React.FC = () => {
   return (
     <Router>
       <Header />
       <Routes>
+        {/* Redirect "/" to "/home" */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
+
         <Route path="/home" element={<Home />} />
         <Route path="/35+/grupa-a" element={<A35 />} />
         <Route path="/35+/grupa-b" element={<B35 />} />
