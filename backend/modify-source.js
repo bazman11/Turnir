@@ -4,7 +4,7 @@ import xlsx from "xlsx";
 import express from "express";
 import multer from "multer";
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Za-z]):/, "$1:");
 
 const app = express();
 const PORT = 5050;
