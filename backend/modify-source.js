@@ -3,17 +3,21 @@ import path from "path";
 import xlsx from "xlsx";
 import express from "express";
 import multer from "multer";
+import { createClient } from "@supabase/supabase-js";
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Za-z]):/, "$1:");
 
 const app = express();
 const PORT = 5050;
-
 const upload = multer({ dest: "uploads/" });
 
-// const sourceFilePath = path.join(__dirname, "../src/pages/A35.tsx");
+// ✅ Initialize Supabase
+const SUPABASE_URL = "https://ioypnpnhzetxdzisfvco.supabase.co";  // Replace with your actual Supabase URL
+const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlveXBucG5oemV0eGR6aXNmdmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNjczMjgsImV4cCI6MjA1Mzg0MzMyOH0.3rMmmfiavH_4irZHA21fCwPUxnuvfWNVtW-Liu0H08A";     // Replace with your Service Role Key (server-side only)
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-const processExcelFile = (filePath) => {
+// ✅ Process Excel File
+const processExcelFile = async (filePath) => {
   const workbook = xlsx.readFile(filePath);
   const sheetNames = workbook.SheetNames;
 
@@ -84,96 +88,108 @@ const processExcelFile = (filePath) => {
             PA: parseInt(row[tableDataStartColumn + 6], 10) || 0,
             DIFF: parseInt(row[tableDataStartColumn + 7], 10) || 0,
             PTS: parseInt(row[tableDataStartColumn + 8], 10) || 0,
-          };
+        };
         }
       }
     }
 
     extractedData[sheetName] = sheetResults;
   });
-
   return extractedData;
 };
 
-const updateReactSourceFile = (extractedData) => {
-  Object.keys(extractedData).forEach((sheetName) => {
-    let fileName;
+// ✅ Save Data to Supabase
+const saveToDatabase = async (extractedData) => {
+  for (const sheetName of Object.keys(extractedData)) {
+    const { round1, table } = extractedData[sheetName];
 
-    // Map sheet names to file names
-    if (sheetName === "35+ A") fileName = "A35.tsx";
-    else if (sheetName === "35+ B") fileName = "B35.tsx";
-    else if (sheetName === "40+ A") fileName = "A40.tsx";
-    else if (sheetName === "40+ B") fileName = "B40.tsx";
-    else if (sheetName === "45+ A") fileName = "A45.tsx";
-    else if (sheetName === "45+ B") fileName = "B45.tsx";
-    else if (sheetName === "50+ A") fileName = "A50.tsx";
-    else if (sheetName === "50+ B") fileName = "B50.tsx";
-    else if (sheetName === "35+ Ž") fileName = "Z35A.tsx";
-    else if (sheetName === "45+ Ž") fileName = "Z45A.tsx";
-    else return; // Skip sheets that don't have a corresponding file
+    // ✅ Insert or update teams and game results
+    for (const match of Object.values(round1)) {
+      const { Player1, Player2, Score1, Score2 } = match;
 
-    // Construct the file path
-    const filePath = path.join(__dirname, `../src/pages/${fileName}`);
+      // Insert or update teams in "teams" table
+      await supabase.from("teams").upsert([{ name: Player1 }], { onConflict: ["name"] });
+      await supabase.from("teams").upsert([{ name: Player2 }], { onConflict: ["name"] });
 
-    const round1Data = extractedData[sheetName]?.round1 || {};
-    const tableData = extractedData[sheetName]?.table || {};
+      const team1Res = await supabase.from("teams").select("id").eq("name", Player1).single();
+      const team2Res = await supabase.from("teams").select("id").eq("name", Player2).single();
 
-    let pageContent = `
-      <div className="card-body">
-    `;
+      if (team1Res.data && team2Res.data) {
+        await supabase
+          .from("games")
+          .upsert(
+            [
+              {
+                round: 1,
+                sheet_name: sheetName,
+                team1_id: team1Res.data.id,
+                team2_id: team2Res.data.id,
+                score1: Score1,
+                score2: Score2,
+              },
+            ],
+            { onConflict: ["round", "sheet_name", "team1_id", "team2_id"] }
+          );
+      }
+    }
 
-    Object.values(round1Data).forEach((match, index) => {
-      pageContent += `
-      <div className="fixture mb-3">
-        <p className="mb-1"><strong>${match.Player1} vs ${
-        match.Player2
-      }</strong></p>
-        <p className="mb-1">Score: ${match.Score1} - ${match.Score2}</p>
-        <p>Match Number: ${index + 1}</p>
-      </div>
-      <hr />
-    `;
-    });
+    // ✅ Insert or update standings data
+    for (const [teamName, stats] of Object.entries(table)) {
+      await supabase.from("teams").upsert([{ name: teamName }], { onConflict: ["name"] });
 
-    let tableContent = `
-    <ul className="list-group">
-  `;
+      const teamRes = await supabase.from("teams").select("id").eq("name", teamName).single();
 
-    Object.entries(tableData).forEach(([teamName, teamStats]) => {
-      tableContent += `
-      <li className="list-group-item">
-        <div className="d-flex justify-content-between align-items-center">
-          <span className="team-name">${teamName}</span>
-          <span className="badge bg-primary rounded-pill">
-            ${teamStats.PTS}
-          </span>
-        </div>
-      </li>
-    `;
-    });
+      if (teamRes.data) {
+        const existingStanding = await supabase
+          .from("standings")
+          .select("*")
+          .eq("sheet_name", sheetName)
+          .eq("team_id", teamRes.data.id)
+          .single();
 
-    const originalContent = fs.readFileSync(filePath, "utf-8");
-    const updatedContent = originalContent.replace(
-      /<div className="card-body">/,
-      `${pageContent}`
-    );
-    const updateContentTable = updatedContent.replace(
-      /<ul className="list-group">/,
-      `${tableContent}`
-    );
-
-    fs.writeFileSync(filePath, updateContentTable, "utf-8");
-    console.log(`File ${fileName} updated successfully!`);
-  });
+        if (existingStanding.data) {
+          // ✅ If the team already exists, update its standing
+          await supabase
+            .from("standings")
+            .update({
+              games_played: stats.GP, // Replace with new value
+              wins: stats.W,
+              draws: stats.D,
+              losses: stats.L,
+              points: stats.PTS,
+            })
+            .eq("sheet_name", sheetName)
+            .eq("team_id", teamRes.data.id);
+        } else {
+          // ✅ If the team doesn't exist, insert a new row
+          await supabase
+            .from("standings")
+            .insert([
+              {
+                sheet_name: sheetName,
+                team_id: teamRes.data.id,
+                games_played: stats.GP,
+                wins: stats.W,
+                draws: stats.D,
+                losses: stats.L,
+                points: stats.PTS,
+              },
+            ]);
+        }
+      }
+    }
+  }
 };
 
-app.post("/upload", upload.single("file"), (req, res) => {
+
+// ✅ Upload API
+app.post("/upload", upload.single("file"), async (req, res) => {
   const filePath = req.file.path;
   try {
-    const extractedData = processExcelFile(filePath);
-    updateReactSourceFile(extractedData);
+    const extractedData = await processExcelFile(filePath);
+    await saveToDatabase(extractedData);
     res.send({
-      message: "React source file updated successfully!",
+      message: "Data uploaded to Supabase successfully!",
       data: extractedData,
     });
   } catch (err) {
@@ -184,7 +200,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
   }
 });
 
-// Start the server
+// ✅ Start Server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
