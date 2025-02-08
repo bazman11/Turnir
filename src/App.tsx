@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -21,52 +21,6 @@ import Z45 from "./pages/Z45";
 import { DataProvider } from "./context/DataContext";
 
 const App: React.FC = () => {
-  const [standings, setStandings] = useState<any[]>([]);
-  const [games, setGames] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const sheetName1 = "35+ A";
-  const sheetName2 = "35+ B";
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     try {
-  //       // ✅ Fetch Standings with Correct Foreign Key Reference
-  //       const { data: standingsData, error: standingsError } = await supabase
-  //         .from("standings")
-  //         .select(`
-  //           id, sheet_name, games_played, wins, draws, losses, points,
-  //           teams!standings_team_id_fkey(name)  -- Correct FK reference
-  //         `)
-  //         .in("sheet_name", [sheetName1, sheetName2]);
-
-  //       if (standingsError) throw standingsError;
-
-  //       // ✅ Fetch Games with Explicit Relationship Names
-  //       const { data: gamesData, error: gamesError } = await supabase
-  //         .from("games")
-  //         .select(`
-  //           id, sheet_name, round, score1, score2,
-  //           team1:teams!games_team1_id_fkey(name),
-  //           team2:teams!games_team2_id_fkey(name)
-  //         `)
-  //         .in("sheet_name", [sheetName1, sheetName2]);
-
-  //       if (gamesError) throw gamesError;
-
-  //       console.log("✅ Standings Data:", standingsData);
-  //       console.log("✅ Games Data:", gamesData);
-
-  //       setStandings(standingsData);
-  //       setGames(gamesData);
-  //     } catch (error) {
-  //       console.error("❌ Error fetching data:", error);
-  //     }
-  //     setLoading(false);
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   return (
     <DataProvider>
