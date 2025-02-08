@@ -21,46 +21,49 @@ export const processExcelFile = async (file: File) => {
           defval: "",
         });
 
-        const sheetResults = { round1: {}, table: {} };
-        let matchNumber = 1;
-        let round1Start = -1;
-        let tableStart = -1;
+        const sheetResults: Record<string, any> = { table: {} };
+        let currentRound: string | null = null;
 
-        // Find indices for ROUND 1 and Table
+        // Scan the sheet and extract all rounds dynamically
         sheetData.forEach((row, index) => {
           if (
-            row.some((cell) =>
-              cell?.toString().toUpperCase().includes("ROUND 1")
-            )
+            row.some((cell) => cell?.toString().toUpperCase().includes("ROUND"))
           ) {
-            round1Start = index + 1;
+            const roundNumber = row
+              .find((cell) => cell?.toString().toUpperCase().includes("ROUND"))
+              ?.toString()
+              .split(" ")[1];
+            currentRound = `round${roundNumber}`;
+            sheetResults[currentRound] = {}; // Initialize the round
           }
+
+          // If we are in a round and data is found, extract match results
           if (
-            row.some((cell) => cell?.toString().toUpperCase().includes("GP"))
+            currentRound &&
+            row[0] &&
+            row[1] &&
+            row.length >= 5 &&
+            !isNaN(parseInt(row[2], 10)) &&
+            !isNaN(parseInt(row[4], 10))
           ) {
-            tableStart = index + 1;
-          }
-        });
-
-        // Parse ROUND 1 data
-        if (round1Start !== -1) {
-          for (let i = round1Start; i < sheetData.length; i++) {
-            const row = sheetData[i];
-            if (!row[0] || !row[1] || row.length < 5) break;
-
-            sheetResults.round1[matchNumber] = {
+            const matchNumber =
+              Object.keys(sheetResults[currentRound]).length + 1;
+            sheetResults[currentRound][matchNumber] = {
               Player1: row[0],
               Player2: row[1],
               Score1: parseInt(row[2], 10) || 0,
               Score2: parseInt(row[4], 10) || 0,
             };
-            matchNumber++;
           }
-        }
+        });
 
-        // Parse Table Data
-        if (tableStart !== -1) {
-          for (let i = tableStart; i < sheetData.length; i++) {
+        // Find table data (standings)
+        const tableStartIndex = sheetData.findIndex((row) =>
+          row.some((cell) => cell?.toString().toUpperCase().includes("GP"))
+        );
+
+        if (tableStartIndex !== -1) {
+          for (let i = tableStartIndex + 1; i < sheetData.length; i++) {
             const row = sheetData[i];
             const teamName = row[7];
             if (teamName) {
@@ -81,84 +84,95 @@ export const processExcelFile = async (file: File) => {
         extractedData[sheetName] = sheetResults;
       });
 
+      console.log("Extracted data:", extractedData);
       resolve(extractedData);
     };
 
     reader.onerror = (error) => reject(error);
   });
 };
-
 // ✅ Function to save extracted data to Supabase
 export const saveToDatabase = async (extractedData: any) => {
   for (const sheetName of Object.keys(extractedData)) {
-    const { round1, table } = extractedData[sheetName];
+    console.log("Extracted data for sheet:", sheetName);
+    const sheetResults = extractedData[sheetName];
 
-    // Insert or update game results
-    for (const match of Object.values(round1)) {
-      const { Player1, Player2, Score1, Score2 } = match;
+    // ✅ Process all rounds dynamically
+    Object.keys(sheetResults).forEach(async (key) => {
+      if (key.startsWith("round")) {
+        const roundNumber = parseInt(key.replace("round", ""), 10); // Extract round number
+        const roundData = sheetResults[key];
 
-      await supabase
-        .from("teams")
-        .upsert([{ name: Player1 }], { onConflict: ["name"] });
-      await supabase
-        .from("teams")
-        .upsert([{ name: Player2 }], { onConflict: ["name"] });
+        for (const match of Object.values(roundData)) {
+          const { Player1, Player2, Score1, Score2 } = match;
 
-      const team1Res = await supabase
-        .from("teams")
-        .select("id")
-        .eq("name", Player1)
-        .single();
-      const team2Res = await supabase
-        .from("teams")
-        .select("id")
-        .eq("name", Player2)
-        .single();
+          // Insert or update teams
+          await supabase
+            .from("teams")
+            .upsert([{ name: Player1 }], { onConflict: ["name"] });
+          await supabase
+            .from("teams")
+            .upsert([{ name: Player2 }], { onConflict: ["name"] });
 
-      if (team1Res.data && team2Res.data) {
-        await supabase.from("games").upsert(
-          [
-            {
-              round: 1,
-              sheet_name: sheetName,
-              team1_id: team1Res.data.id,
-              team2_id: team2Res.data.id,
-              score1: Score1,
-              score2: Score2,
-            },
-          ],
-          { onConflict: ["round", "sheet_name", "team1_id", "team2_id"] }
-        );
+          const team1Res = await supabase
+            .from("teams")
+            .select("id")
+            .eq("name", Player1)
+            .single();
+          const team2Res = await supabase
+            .from("teams")
+            .select("id")
+            .eq("name", Player2)
+            .single();
+
+          if (team1Res.data && team2Res.data) {
+            await supabase.from("games").upsert(
+              [
+                {
+                  round: roundNumber, // ✅ Store the correct round number
+                  sheet_name: sheetName,
+                  team1_id: team1Res.data.id,
+                  team2_id: team2Res.data.id,
+                  score1: Score1,
+                  score2: Score2,
+                },
+              ],
+              { onConflict: ["round", "sheet_name", "team1_id", "team2_id"] }
+            );
+          }
+        }
       }
-    }
+    });
 
-    // Insert or update standings
-    for (const [teamName, stats] of Object.entries(table)) {
-      await supabase
-        .from("teams")
-        .upsert([{ name: teamName }], { onConflict: ["name"] });
+    // ✅ Process standings (table data)
+    if (sheetResults.table) {
+      for (const [teamName, stats] of Object.entries(sheetResults.table)) {
+        await supabase
+          .from("teams")
+          .upsert([{ name: teamName }], { onConflict: ["name"] });
 
-      const teamRes = await supabase
-        .from("teams")
-        .select("id")
-        .eq("name", teamName)
-        .single();
+        const teamRes = await supabase
+          .from("teams")
+          .select("id")
+          .eq("name", teamName)
+          .single();
 
-      if (teamRes.data) {
-        await supabase.from("standings").upsert(
-          [
-            {
-              sheet_name: sheetName,
-              team_id: teamRes.data.id,
-              games_played: stats.GP,
-              wins: stats.W,
-              draws: stats.D,
-              losses: stats.L,
-              points: stats.PTS,
-            },
-          ],
-          { onConflict: ["sheet_name", "team_id"] }
-        );
+        if (teamRes.data) {
+          await supabase.from("standings").upsert(
+            [
+              {
+                sheet_name: sheetName,
+                team_id: teamRes.data.id,
+                games_played: stats.GP,
+                wins: stats.W,
+                draws: stats.D,
+                losses: stats.L,
+                points: stats.PTS,
+              },
+            ],
+            { onConflict: ["sheet_name", "team_id"] }
+          );
+        }
       }
     }
   }
