@@ -19,7 +19,6 @@ import M60 from "./pages/M60";
 import Z35 from "./pages/Z35";
 import Z45 from "./pages/Z45";
 import { DataProvider } from "./context/DataContext";
-//import supabase from "./supabaseClient";
 
 const App: React.FC = () => {
   const [standings, setStandings] = useState<any[]>([]);
