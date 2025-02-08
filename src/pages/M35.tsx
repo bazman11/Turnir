@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 //import "./css/U15.css";
+import { useData } from "../context/DataContext";
 
 // Mock Data
 const teamsData = [
@@ -123,6 +124,17 @@ const fixturesData = [
 ];
 
 const M35: React.FC = () => {
+  const { standings, games, loading } = useData();
+
+  if (loading) return <p>Loading data...</p>;
+
+  const filteredStandings = standings.filter((s) => s.sheet_name === "35+ A");
+  const filteredGames = games.filter((g) => g.sheet_name === "35+ A");
+
+  useEffect(() => {
+    console.log("FIlter data je ", filteredStandings);
+    console.log("Data je ", filteredGames);
+  }, []);
   // Separate groups
   const groupA = teamsData
     .filter((team) => team.sheet_name === "35+ A")

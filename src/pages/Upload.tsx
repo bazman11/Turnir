@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Button, Container, Form, Modal } from "react-bootstrap";
+import {
+  processExcelFile,
+  saveToDatabase,
+} from "../services/supabaseFunctions";
 
 const Upload: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -30,25 +34,16 @@ const Upload: React.FC = () => {
     formData.append("file", selectedFile);
 
     try {
-      const response = await fetch("http://localhost:5050/upload", {
-        method: "POST",
-        body: formData,
-      });
       setShowModal(false);
-
-      if (response.ok) {
-        const data = await response.json(); // Fetch extracted data
-        // Update sheets state with extracted data
-        alert("Fajl je uspješno uploadovan i procesiran!");
-      } else {
-        alert("Greška prilikom obrade fajla.");
-      }
+      const extractedData = await processExcelFile(selectedFile);
+      await saveToDatabase(extractedData);
+      alert("Fajl je uspješno procesiran i podaci su poslani u bazu!");
     } catch (err) {
       console.error("Greška pri uploadu fajla:", err);
     }
 
-    setShowModal(false); // Close the modal after successful upload
-    setPasscode(""); // Clear passcode input
+    setShowModal(false);
+    setPasscode("");
   };
 
   return (

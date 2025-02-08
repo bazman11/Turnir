@@ -5,15 +5,18 @@ import express from "express";
 import multer from "multer";
 import { createClient } from "@supabase/supabase-js";
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Za-z]):/, "$1:");
+const __dirname = path
+  .dirname(new URL(import.meta.url).pathname)
+  .replace(/^\/([A-Za-z]):/, "$1:");
 
 const app = express();
 const PORT = 5050;
 const upload = multer({ dest: "uploads/" });
 
 // ✅ Initialize Supabase
-const SUPABASE_URL = "https://ioypnpnhzetxdzisfvco.supabase.co";  // Replace with your actual Supabase URL
-const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlveXBucG5oemV0eGR6aXNmdmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNjczMjgsImV4cCI6MjA1Mzg0MzMyOH0.3rMmmfiavH_4irZHA21fCwPUxnuvfWNVtW-Liu0H08A";     // Replace with your Service Role Key (server-side only)
+const SUPABASE_URL = "https://ioypnpnhzetxdzisfvco.supabase.co";
+const SUPABASE_SERVICE_ROLE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlveXBucG5oemV0eGR6aXNmdmNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzgyNjczMjgsImV4cCI6MjA1Mzg0MzMyOH0.3rMmmfiavH_4irZHA21fCwPUxnuvfWNVtW-Liu0H08A"; // Replace with your Service Role Key (server-side only)
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // ✅ Process Excel File
@@ -88,7 +91,7 @@ const processExcelFile = async (filePath) => {
             PA: parseInt(row[tableDataStartColumn + 6], 10) || 0,
             DIFF: parseInt(row[tableDataStartColumn + 7], 10) || 0,
             PTS: parseInt(row[tableDataStartColumn + 8], 10) || 0,
-        };
+          };
         }
       }
     }
@@ -108,36 +111,52 @@ const saveToDatabase = async (extractedData) => {
       const { Player1, Player2, Score1, Score2 } = match;
 
       // Insert or update teams in "teams" table
-      await supabase.from("teams").upsert([{ name: Player1 }], { onConflict: ["name"] });
-      await supabase.from("teams").upsert([{ name: Player2 }], { onConflict: ["name"] });
+      await supabase
+        .from("teams")
+        .upsert([{ name: Player1 }], { onConflict: ["name"] });
+      await supabase
+        .from("teams")
+        .upsert([{ name: Player2 }], { onConflict: ["name"] });
 
-      const team1Res = await supabase.from("teams").select("id").eq("name", Player1).single();
-      const team2Res = await supabase.from("teams").select("id").eq("name", Player2).single();
+      const team1Res = await supabase
+        .from("teams")
+        .select("id")
+        .eq("name", Player1)
+        .single();
+      const team2Res = await supabase
+        .from("teams")
+        .select("id")
+        .eq("name", Player2)
+        .single();
 
       if (team1Res.data && team2Res.data) {
-        await supabase
-          .from("games")
-          .upsert(
-            [
-              {
-                round: 1,
-                sheet_name: sheetName,
-                team1_id: team1Res.data.id,
-                team2_id: team2Res.data.id,
-                score1: Score1,
-                score2: Score2,
-              },
-            ],
-            { onConflict: ["round", "sheet_name", "team1_id", "team2_id"] }
-          );
+        await supabase.from("games").upsert(
+          [
+            {
+              round: 1,
+              sheet_name: sheetName,
+              team1_id: team1Res.data.id,
+              team2_id: team2Res.data.id,
+              score1: Score1,
+              score2: Score2,
+            },
+          ],
+          { onConflict: ["round", "sheet_name", "team1_id", "team2_id"] }
+        );
       }
     }
 
     // ✅ Insert or update standings data
     for (const [teamName, stats] of Object.entries(table)) {
-      await supabase.from("teams").upsert([{ name: teamName }], { onConflict: ["name"] });
+      await supabase
+        .from("teams")
+        .upsert([{ name: teamName }], { onConflict: ["name"] });
 
-      const teamRes = await supabase.from("teams").select("id").eq("name", teamName).single();
+      const teamRes = await supabase
+        .from("teams")
+        .select("id")
+        .eq("name", teamName)
+        .single();
 
       if (teamRes.data) {
         const existingStanding = await supabase
@@ -162,25 +181,22 @@ const saveToDatabase = async (extractedData) => {
             .eq("team_id", teamRes.data.id);
         } else {
           // ✅ If the team doesn't exist, insert a new row
-          await supabase
-            .from("standings")
-            .insert([
-              {
-                sheet_name: sheetName,
-                team_id: teamRes.data.id,
-                games_played: stats.GP,
-                wins: stats.W,
-                draws: stats.D,
-                losses: stats.L,
-                points: stats.PTS,
-              },
-            ]);
+          await supabase.from("standings").insert([
+            {
+              sheet_name: sheetName,
+              team_id: teamRes.data.id,
+              games_played: stats.GP,
+              wins: stats.W,
+              draws: stats.D,
+              losses: stats.L,
+              points: stats.PTS,
+            },
+          ]);
         }
       }
     }
   }
 };
-
 
 // ✅ Upload API
 app.post("/upload", upload.single("file"), async (req, res) => {
