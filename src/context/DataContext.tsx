@@ -41,7 +41,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
           .from("standings")
           .select(
             `
-            id, sheet_name, games_played, wins, draws, losses, points,
+            id, sheet_name, games_played, wins, draws, losses, points, PF, PA, DIFF,
             teams!standings_team_id_fkey(name)
           `
           )

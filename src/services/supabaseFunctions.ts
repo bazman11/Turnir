@@ -66,7 +66,7 @@ export const processExcelFile = async (file: File) => {
           for (let i = tableStartIndex + 1; i < sheetData.length; i++) {
             const row = sheetData[i];
             const teamName = row[7];
-            if (teamName) {
+            if (teamName && teamName !== "Tabela") {
               sheetResults.table[teamName] = {
                 GP: parseInt(row[8], 10) || 0,
                 W: parseInt(row[9], 10) || 0,
@@ -91,25 +91,27 @@ export const processExcelFile = async (file: File) => {
     reader.onerror = (error) => reject(error);
   });
 };
-// ✅ Function to save extracted data to Supabase
+
 export const saveToDatabase = async (extractedData: any) => {
+  await supabase.from("games").delete().neq("id", 0);
+  await supabase.from("standings").delete().neq("id", 0);
+
   for (const sheetName of Object.keys(extractedData)) {
     console.log("Extracted data for sheet:", sheetName);
     const sheetResults = extractedData[sheetName];
 
-    // ✅ Process all rounds dynamically
     Object.keys(sheetResults).forEach(async (key) => {
       if (key.startsWith("round")) {
-        const roundNumber = parseInt(key.replace("round", ""), 10); // Extract round number
+        const roundNumber = parseInt(key.replace("round", ""), 10);
         const roundData = sheetResults[key];
 
         for (const match of Object.values(roundData)) {
           const { Player1, Player2, Score1, Score2 } = match;
 
-          // Insert or update teams
           await supabase
             .from("teams")
             .upsert([{ name: Player1 }], { onConflict: ["name"] });
+
           await supabase
             .from("teams")
             .upsert([{ name: Player2 }], { onConflict: ["name"] });
@@ -119,6 +121,7 @@ export const saveToDatabase = async (extractedData: any) => {
             .select("id")
             .eq("name", Player1)
             .single();
+
           const team2Res = await supabase
             .from("teams")
             .select("id")
@@ -129,7 +132,7 @@ export const saveToDatabase = async (extractedData: any) => {
             await supabase.from("games").upsert(
               [
                 {
-                  round: roundNumber, // ✅ Store the correct round number
+                  round: roundNumber,
                   sheet_name: sheetName,
                   team1_id: team1Res.data.id,
                   team2_id: team2Res.data.id,
@@ -144,7 +147,6 @@ export const saveToDatabase = async (extractedData: any) => {
       }
     });
 
-    // ✅ Process standings (table data)
     if (sheetResults.table) {
       for (const [teamName, stats] of Object.entries(sheetResults.table)) {
         await supabase
@@ -168,6 +170,9 @@ export const saveToDatabase = async (extractedData: any) => {
                 draws: stats.D,
                 losses: stats.L,
                 points: stats.PTS,
+                PF: stats.PF,
+                PA: stats.PA,
+                DIFF: stats.DIFF,
               },
             ],
             { onConflict: ["sheet_name", "team_id"] }

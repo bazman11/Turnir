@@ -1,6 +1,7 @@
 import React from "react";
 import { useData } from "../../context/DataContext";
-import "../../pages/css/U15.css"
+import "../../pages/css/U15.css";
+import Table from "./Table";
 
 interface CategoryPageProps {
   title: string;
@@ -12,8 +13,12 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
 
   if (loading) return <p>Loading data...</p>;
 
-  const groupA = standings.filter((s) => s.sheet_name === sheetNames[0]).sort((a, b) => b.points - a.points);
-  const groupB = standings.filter((team) => team.sheet_name === sheetNames[1]).sort((a, b) => b.points - a.points);
+  const groupA = standings
+    .filter((s) => s.sheet_name === sheetNames[0])
+    .sort((a, b) => b.points - a.points);
+  const groupB = standings
+    .filter((team) => team.sheet_name === sheetNames[1])
+    .sort((a, b) => b.points - a.points);
   const fixtures = games.filter((g) => sheetNames.includes(g.sheet_name));
 
   return (
@@ -33,8 +38,12 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
             {fixtures.length > 0 ? (
               <div className="d-flex flex-wrap justify-content-center">
                 {fixtures.map((match) => (
-                  <div key={match.id} className="d-flex align-items-center mx-2 py-1">
-                    <strong>{match.team1.name}</strong> ({match.score1}) vs ({match.score2}) <strong>{match.team2.name}</strong>
+                  <div
+                    key={match.id}
+                    className="d-flex align-items-center mx-2 py-1"
+                  >
+                    <strong>{match.team1.name}</strong> ({match.score1}) vs (
+                    {match.score2}) <strong>{match.team2.name}</strong>
                   </div>
                 ))}
               </div>
@@ -53,14 +62,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
           </div>
           <div className="card-body">
             {groupA.length > 0 ? (
-              <ul className="list-group">
-                {groupA.map((team) => (
-                  <li key={team.id} className="list-group-item d-flex justify-content-between align-items-center">
-                    {team.teams.name}
-                    <span className="badge bg-secondary">{team.points} pts</span>
-                  </li>
-                ))}
-              </ul>
+              <Table standings={groupA} />
             ) : (
               <p className="text-muted text-center">No data available.</p>
             )}
@@ -76,14 +78,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
           </div>
           <div className="card-body">
             {groupB.length > 0 ? (
-              <ul className="list-group">
-                {groupB.map((team) => (
-                  <li key={team.id} className="list-group-item d-flex justify-content-between align-items-center">
-                    {team.teams.name}
-                    <span className="badge bg-secondary">{team.points} pts</span>
-                  </li>
-                ))}
-              </ul>
+              <Table standings={groupB} />
             ) : (
               <p className="text-muted text-center">No data available.</p>
             )}
