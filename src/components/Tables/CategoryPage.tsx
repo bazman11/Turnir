@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useData } from "../../context/DataContext";
-import "../../pages/css/U15.css";
-import Table from "./Table";
+import LeaderboardTable from "./LeaderboardTable";
+import FixturesTable from "./FixturesTable";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 interface CategoryPageProps {
   title: string;
@@ -10,8 +12,13 @@ interface CategoryPageProps {
 
 const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
   const { standings, games, loading } = useData();
+  const [view, setView] = useState("tables"); // 'tables' or 'fixtures'
 
-  if (loading) return <p>Loading data...</p>;
+  if (loading) return <div className="loader">Loading...</div>;
+
+  const isSingleTable = sheetNames.some(
+    (name) => name === "35+ Ž" || name === "45+ Ž"
+  );
 
   const groupA = standings
     .filter((s) => s.sheet_name === sheetNames[0])
@@ -19,73 +26,109 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
   const groupB = standings
     .filter((team) => team.sheet_name === sheetNames[1])
     .sort((a, b) => b.points - a.points);
-  const fixtures = games.filter((g) => sheetNames.includes(g.sheet_name));
+
+  const groupedFixtures = games
+    .filter((game) => sheetNames.includes(game.sheet_name))
+    .reduce((acc, game) => {
+      acc[game.round] = acc[game.round] || [];
+      acc[game.round].push(game);
+      return acc;
+    }, {});
 
   return (
-    <div className="row g-4">
-      {/* Header Section */}
-      <div className="header-container mb-4 text-center">
-        <h1 className="kategorija">Kategorija: {title}</h1>
+    <Container fluid className="py-5">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-center mb-4 text-4xl font-bold text-gray-800">
+          {title || "Unknown"} Tournament
+        </h1>
+      </motion.div>
+
+      {/* Buttons for switching views - Sticky while scrolling */}
+      <div className="d-flex justify-content-center mb-4 position-sticky top-0 w-100 bg-white py-3 shadow-sm z-3">
+        <Button
+          variant={view === "tables" ? "warning" : "secondary"}
+          className="mx-2 px-4"
+          onClick={() => setView("tables")}
+        >
+          Tables
+        </Button>
+        <Button
+          variant={view === "fixtures" ? "warning" : "secondary"}
+          className="mx-2 px-4"
+          onClick={() => setView("fixtures")}
+        >
+          Fixtures
+        </Button>
       </div>
 
-      {/* Fixtures */}
-      <div className="col-md-4">
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-primary text-white text-center py-2">
-            <h5 className="mb-0">Fixtures</h5>
-          </div>
-          <div className="card-body p-2">
-            {fixtures.length > 0 ? (
-              <div className="d-flex flex-wrap justify-content-center">
-                {fixtures.map((match) => (
-                  <div
-                    key={match.id}
-                    className="d-flex align-items-center mx-2 py-1"
-                  >
-                    <strong>{match.team1.name}</strong> ({match.score1}) vs (
-                    {match.score2}) <strong>{match.team2.name}</strong>
-                  </div>
-                ))}
+      <div className="mt-3">
+        {" "}
+        {/* Added margin to prevent overlap */}
+        {view === "tables" ? (
+          isSingleTable ? (
+            <Row className="gx-5">
+              <Col lg={12}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="bg-white shadow-lg rounded-lg overflow-hidden mb-5 p-4"
+                >
+                  <h2 className="text-center">Standings</h2>
+                  <LeaderboardTable standings={groupA} />
+                </motion.div>
+              </Col>
+            </Row>
+          ) : (
+            <Row className="gx-5">
+              <Col lg={12}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="bg-white shadow-lg rounded-lg overflow-hidden mb-5 p-4"
+                >
+                  <h2 className="text-center">Western Conference Standings</h2>
+                  <LeaderboardTable standings={groupA} />
+                </motion.div>
+              </Col>
+              <Col lg={12}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="bg-white shadow-lg rounded-lg overflow-hidden p-4"
+                >
+                  <h2 className="text-center">Eastern Conference Standings</h2>
+                  <LeaderboardTable standings={groupB} />
+                </motion.div>
+              </Col>
+            </Row>
+          )
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white shadow-lg rounded-lg overflow-hidden p-4"
+          >
+            <h2 className="text-center">Fixtures</h2>
+            {Object.entries(groupedFixtures).map(([round, matches]) => (
+              <div key={round} className="mb-4">
+                <h3 className="text-center text-lg font-bold bg-gray-200 py-2 rounded">
+                  Round {round}
+                </h3>
+                <FixturesTable fixtures={matches} />
               </div>
-            ) : (
-              <p className="text-muted text-center">No fixtures available.</p>
-            )}
-          </div>
-        </div>
+            ))}
+          </motion.div>
+        )}
       </div>
-
-      {/* Group A Leaderboard */}
-      <div className="col-md-4">
-        <div className="card shadow-lg border-0">
-          <div className="card-header bg-success text-white text-center">
-            <h5 className="mb-0">Leaderboard - Grupa A</h5>
-          </div>
-          <div className="card-body">
-            {groupA.length > 0 ? (
-              <Table standings={groupA} />
-            ) : (
-              <p className="text-muted text-center">No data available.</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Group B Leaderboard */}
-      <div className="col-md-4">
-        <div className="card shadow-lg border-0">
-          <div className="card-header bg-warning text-white text-center">
-            <h5 className="mb-0">Leaderboard - Grupa B</h5>
-          </div>
-          <div className="card-body">
-            {groupB.length > 0 ? (
-              <Table standings={groupB} />
-            ) : (
-              <p className="text-muted text-center">No data available.</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    </Container>
   );
 };
 
