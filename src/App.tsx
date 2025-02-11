@@ -21,16 +21,14 @@ import Z45 from "./pages/Z45";
 import { DataProvider } from "./context/DataContext";
 
 const App: React.FC = () => {
-
   return (
     <DataProvider>
       <Router>
         <Header />
         <Routes>
           {/* Redirect "/" to "/home" */}
-          <Route path="/" element={<Navigate to="/home" replace />} />
 
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
 
           {/* M35 (35+) Route */}
           <Route path="/M35" element={<M35 />} />
