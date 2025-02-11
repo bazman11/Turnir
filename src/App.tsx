@@ -1,9 +1,8 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router, // ✅ Switched to HashRouter
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import Header from "./components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -24,37 +23,19 @@ const App: React.FC = () => {
   return (
     <DataProvider>
       <Router>
+        {" "}
+        {/* ✅ HashRouter ensures refresh works */}
         <Header />
         <Routes>
-          {/* Redirect "/" to "/home" */}
-
           <Route path="/" element={<Home />} />
-
-          {/* M35 (35+) Route */}
           <Route path="/M35" element={<M35 />} />
-
-          {/* M40 (40+) Route */}
           <Route path="/M40" element={<M40 />} />
-
-          {/* M45 (45+) Route */}
           <Route path="/M45" element={<M45 />} />
-
-          {/* M50 (50+) Route */}
           <Route path="/M50" element={<M50 />} />
-
-          {/* M55 (55+) Route */}
           <Route path="/M55" element={<M55 />} />
-
-          {/* M60 (60+) Route */}
           <Route path="/M60" element={<M60 />} />
-
-          {/* Z35 (Ž35+) Route */}
           <Route path="/Z35" element={<Z35 />} />
-
-          {/* Z45 (Ž45+) Route */}
           <Route path="/Z45" element={<Z45 />} />
-
-          {/* Upload Page */}
           <Route path="/upload" element={<Upload />} />
         </Routes>
       </Router>
