@@ -12,7 +12,7 @@ const Header: React.FC = () => {
         <Navbar.Collapse id="navbarNav" className="justify-content-center">
           <Nav className="align-items-center">
             {/* Home Link */}
-            <Nav.Link as={NavLink} to="/home" end className="text-dark">
+            <Nav.Link as={NavLink} to="/" end className="text-dark">
               Početna
             </Nav.Link>
 
