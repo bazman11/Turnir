@@ -24,7 +24,6 @@ const App: React.FC = () => {
     <DataProvider>
       <Router>
         {" "}
-        {/* ✅ HashRouter ensures refresh works */}
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
