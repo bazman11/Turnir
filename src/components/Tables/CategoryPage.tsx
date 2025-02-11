@@ -19,6 +19,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
   const isSingleTable = sheetNames.some(
     (name) => name === "35+ Ž" || name === "45+ Ž"
   );
+  console.log(standings)
 
   const groupA = standings
     .filter((s) => s.sheet_name === sheetNames[0])
@@ -43,25 +44,25 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-center mb-4 text-4xl font-bold text-gray-800">
-          {title || "Unknown"} Tournament
+          Kategorija: {title || "Unknown"}
         </h1>
       </motion.div>
 
       {/* Buttons for switching views - Sticky while scrolling */}
       <div className="d-flex justify-content-center mb-4 position-sticky top-0 w-100 bg-white py-3 shadow-sm z-3">
         <Button
-          variant={view === "tables" ? "warning" : "secondary"}
+          variant={view === "tables" ? "primary" : "secondary"}
           className="mx-2 px-4"
           onClick={() => setView("tables")}
         >
-          Tables
+          Tabela
         </Button>
         <Button
-          variant={view === "fixtures" ? "warning" : "secondary"}
+          variant={view === "fixtures" ? "primary" : "secondary"}
           className="mx-2 px-4"
           onClick={() => setView("fixtures")}
         >
-          Fixtures
+          Rezultati
         </Button>
       </div>
 
@@ -92,7 +93,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="bg-white shadow-lg rounded-lg overflow-hidden mb-5 p-4"
                 >
-                  <h2 className="text-center">Western Conference Standings</h2>
+                  <h2 className="text-center">Tabela grupa A</h2>
                   <LeaderboardTable standings={groupA} />
                 </motion.div>
               </Col>
@@ -103,7 +104,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
                   transition={{ duration: 0.5, delay: 0.4 }}
                   className="bg-white shadow-lg rounded-lg overflow-hidden p-4"
                 >
-                  <h2 className="text-center">Eastern Conference Standings</h2>
+                  <h2 className="text-center">Tabela grupa B</h2>
                   <LeaderboardTable standings={groupB} />
                 </motion.div>
               </Col>

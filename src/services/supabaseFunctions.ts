@@ -66,7 +66,8 @@ export const processExcelFile = async (file: File) => {
           for (let i = tableStartIndex + 1; i < sheetData.length; i++) {
             const row = sheetData[i];
             const teamName = row[7];
-            if (teamName && teamName !== "Tabela") {
+            console.log(teamName)
+            if (teamName && teamName !== "Tabela" && teamName!=="Table") {
               sheetResults.table[teamName] = {
                 GP: parseInt(row[8], 10) || 0,
                 W: parseInt(row[9], 10) || 0,

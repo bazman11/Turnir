@@ -25,10 +25,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     "45+ B",
     "50+ A",
     "50+ B",
-    "55+ A",
-    "55+ B",
-    "60+ A",
-    "60+ B",
+    "55+",
+    "60+",
     "35+ Ž",
     "45+ Ž",
   ]; // Add more if needed

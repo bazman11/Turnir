@@ -20,10 +20,10 @@ const Upload: React.FC = () => {
   };
 
   const handleFileUpload = async () => {
-    // if (passcode !== "Hillsturnir1!") {
-    //   alert("Unijeli ste pogrešnu šifru! Molimo pokušajte ponovo.");
-    //   return;
-    // }
+    if (passcode !== "Hillsturnir1!") {
+      alert("Unijeli ste pogrešnu šifru! Molimo pokušajte ponovo.");
+      return;
+    }
 
     if (!selectedFile) {
       alert("Molimo vas da izaberete fajl prije slanja!");
@@ -91,7 +91,7 @@ const Upload: React.FC = () => {
           <Button
             variant="primary"
             onClick={handleFileUpload}
-            //disabled={!passcode}
+            disabled={!passcode}
           >
             Potvrdi
           </Button>
