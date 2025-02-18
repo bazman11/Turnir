@@ -9,6 +9,5 @@ export default defineConfig({
   },
   server: {
     proxy: {}, // ✅ Use proxy instead if needed
-    middlewareMode: true,
   },
 });

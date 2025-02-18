@@ -17,7 +17,7 @@ const CategoryPage: React.FC<CategoryPageProps> = ({ title, sheetNames }) => {
   if (loading) return <div className="loader">Loading...</div>;
 
   const isSingleTable = sheetNames.some(
-    (name) => name === "35+ Ž" || name === "45+ Ž"
+    (name) => name === "35+ Ž" || name === "40+ Ž" || name === "45+ Ž"
   );
   console.log(standings)
 

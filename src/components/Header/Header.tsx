@@ -40,6 +40,9 @@ const Header: React.FC = () => {
             <Nav.Link as={NavLink} to="/Z35" className="text-dark">
               Ž35+
             </Nav.Link>
+            <Nav.Link as={NavLink} to="/Z35" className="text-dark">
+              Ž40+
+            </Nav.Link>
             <Nav.Link as={NavLink} to="/Z45" className="text-dark">
               Ž45+
             </Nav.Link>

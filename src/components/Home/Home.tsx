@@ -1,11 +1,22 @@
 import React from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
+import veteraniLogo from "./veterani.png";
 
 const Home: React.FC = () => {
   return (
     <div className="first-page-container d-flex">
-      {/* Left Section */}
+      {/* Right Section (moved here) */}
+      <div className="right-section flex-grow-1 p-4 text-center d-flex flex-column justify-content-center align-items-center">
+      <img src={veteraniLogo} alt="Veterani Sarajevo Logo" className="img-fluid" />
+        <button className="btn btn-primary mt-3">
+          <Link to="/M35" className="text-white text-decoration-none">
+            Pogledaj rezultate i tabelu
+          </Link>
+        </button>
+      </div>
+
+      {/* Left Section (moved here) */}
       <div className="left-section bg-light text-dark p-4 rounded shadow">
         <h1 className="mb-3 text-center">4. Sarajevo Hills Basket Turnir</h1>
         <h3 className="text-warning text-center">21.02. - 23.02.2025</h3>
@@ -14,7 +25,7 @@ const Home: React.FC = () => {
           <h4 className="text-uppercase text-center">Kategorije</h4>
           <p className="text-center">
             <strong>M:</strong> 35+, 40+, 45+, 50+, 55+, 60+ <br />
-            <strong>Ž:</strong> 35+, 45+
+            <strong>Ž:</strong> 35+, 40+, 45+
           </p>
         </div>
 
@@ -55,19 +66,6 @@ const Home: React.FC = () => {
             ></iframe>
           </div>
         </div>
-      </div>
-
-      {/* Right Section */}
-      <div className="right-section flex-grow-1 p-4 text-center d-flex flex-column justify-content-center align-items-center">
-        <p>
-          Zainteresovani za rezultate? Provjerite stanje na tabeli i saznajte
-          kako vaš omiljeni tim stoji na turniru.
-        </p>
-        <button className="btn btn-primary mt-3">
-          <Link to="/M35" className="text-white text-decoration-none">
-            Pogledaj rezultate i tabelu
-          </Link>
-        </button>
       </div>
     </div>
   );
