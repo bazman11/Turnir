@@ -18,6 +18,7 @@ import M60 from "./pages/M60";
 import Z35 from "./pages/Z35";
 import Z45 from "./pages/Z45";
 import { DataProvider } from "./context/DataContext";
+import Z40 from "./pages/Z40";
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,7 @@ const App: React.FC = () => {
           <Route path="/M55" element={<M55 />} />
           <Route path="/M60" element={<M60 />} />
           <Route path="/Z35" element={<Z35 />} />
+          <Route path="/Z40" element={<Z40 />} />
           <Route path="/Z45" element={<Z45 />} />
           <Route path="/upload" element={<Upload />} />
         </Routes>
